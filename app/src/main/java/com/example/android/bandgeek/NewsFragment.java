@@ -2,6 +2,7 @@ package com.example.android.bandgeek;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +24,7 @@ public class NewsFragment extends Fragment {
     private View view;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news, container, false);
@@ -61,8 +62,8 @@ public class NewsFragment extends Fragment {
             String articleJsonStr = api.getNewsJson();
 
             try {
-                NewsJsonParser newsJsonParser = new NewsJsonParser(articleJsonStr);
-                return newsJsonParser.parse();
+                JsonParser jsonParser = new JsonParser(articleJsonStr);
+                return jsonParser.parseNews();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
