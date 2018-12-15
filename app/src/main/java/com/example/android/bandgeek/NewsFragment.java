@@ -1,5 +1,6 @@
 package com.example.android.bandgeek;
 
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class NewsFragment extends Fragment {
@@ -39,8 +41,17 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FetchArticlesTask fetchArticlesTask = new FetchArticlesTask();
-        fetchArticlesTask.execute();
+        if (ConnectivityChecker.isConnectedToInternet(Objects.requireNonNull(getContext()))) {
+            FetchArticlesTask fetchArticlesTask = new FetchArticlesTask();
+            fetchArticlesTask.execute();
+        }
+        else {
+            mArticles.clear();
+            mArticles.add(new Article("https://upload.wikimedia.org/" +
+                    "wikipedia/commons/thumb/a/a0/Font_Awesome_5_regular_frown.svg/200px-" +
+                    "Font_Awesome_5_regular_frown.svg.png", "No internet connection.", "", ""));
+            mNewsRecyclerViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setupRecyclerView() {

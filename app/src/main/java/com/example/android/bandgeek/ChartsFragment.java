@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ChartsFragment extends Fragment {
 
@@ -37,8 +40,18 @@ public class ChartsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FetchSongsTask fetchSongsTask = new FetchSongsTask();
-        fetchSongsTask.execute();
+
+        if (ConnectivityChecker.isConnectedToInternet(Objects.requireNonNull(getContext()))) {
+            FetchSongsTask fetchSongsTask = new FetchSongsTask();
+            fetchSongsTask.execute();
+        }
+        else {
+            mSongs.clear();
+            mSongs.add(new Song("https://upload.wikimedia.org/" +
+                    "wikipedia/commons/thumb/a/a0/Font_Awesome_5_regular_frown.svg/200px-" +
+                    "Font_Awesome_5_regular_frown.svg.png", "No internet connection.", "", "", ""));
+            mSongsRecyclerViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setupRecyclerView() {
@@ -52,7 +65,6 @@ public class ChartsFragment extends Fragment {
         recyclerView.setAdapter(mSongsRecyclerViewAdapter);
     }
 
-    // AsyncTask<Void, Void, ArrayList<Event>>
 
     private class FetchSongsTask extends AsyncTask<Void, Void, ArrayList<Song>> {
 
